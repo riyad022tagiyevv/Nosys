@@ -1,0 +1,34 @@
+{
+  "name": "telegram-swyus-bot",
+  "description": "Telegram bot that filters bad words and provides admin tools.",
+  "repository": "https://github.com/username/repo-name",
+  "keywords": ["telegram", "bot", "moderation", "python"],
+  "stack": "heroku-20",
+  "env": {
+    "TOKEN": {
+      "description": "Telegram bot token",
+      "required": true
+    },
+    "LOG_CHANNEL": {
+      "description": "Telegram log channel ID",
+      "required": true
+    },
+    "START_IMAGE": {
+      "description": "Link to the start message image",
+      "required": true
+    },
+    "OWNER_URL": {
+      "description": "Bot owner's Telegram link",
+      "required": true
+    },
+    "SUPPORT_URL": {
+      "description": "Bot support Telegram link",
+      "required": true
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "heroku/python"
+    }
+  ]
+}
