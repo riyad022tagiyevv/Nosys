@@ -3,7 +3,7 @@
   "description": "Telegram bot that filters bad words and provides admin tools.",
   "repository": "https://github.com/username/repo-name",
   "keywords": ["telegram", "bot", "moderation", "python"],
-  "stack": "heroku-20",
+  "stack": "heroku-22",
   "env": {
     "TOKEN": {
       "description": "Telegram bot token",
