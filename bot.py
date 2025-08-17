@@ -5,10 +5,10 @@ from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, InputMedia
 from datetime import datetime
 import pytz
 import config
+import re
 from soyus import bad_words
 
 bot = telebot.TeleBot(config.TOKEN, parse_mode="HTML")
-
 
 def get_main_keyboard():
     kb = InlineKeyboardMarkup()
@@ -51,7 +51,7 @@ def start_message(message):
     bot.delete_message(chat_id, msg.message_id)
 
     def animate():
-        anim_text = "𝘕𝘰 𝘚𝘰̈𝘺𝘶̈𝘴 𝘣𝘢𝘴𝘭𝘢𝘵𝘪𝘭𝘪𝘳"
+        anim_text = "𝘕𝘰 𝘚𝘰̈𝘺𝘶̈𝘴 𝘣𝘢𝘴𝘭𝘢𝘵𝘪𝘳"
         anim_msg = bot.send_message(chat_id, anim_text)
         for i in range(6):
             try:
@@ -85,7 +85,7 @@ def get_id(message):
                      f"🗣️ Sənin ID nömrən - <code>{message.from_user.id}</code>\n"
                      f"💁 Chat ID - <code>{message.chat.id}</code>")
 
-# ========================== /admins
+
 @bot.message_handler(commands=['admins'])
 def list_admins(message):
     if message.chat.type in ["group", "supergroup"]:
@@ -180,26 +180,27 @@ def callback_handler(call):
 def filter_bad_words(message):
     if message.chat.type not in ["group", "supergroup"]:
         return
-
     if message.from_user.is_bot:
         return
 
     text = (message.text or "").lower()
     caption = (message.caption or "").lower()
-
     if text.startswith("/"):
         return
 
-    if any(word.lower() in text for word in bad_words) or any(word.lower() in caption for word in bad_words):
+    # soyus.py faylında olan sözləri regex ilə yoxlayır
+    pattern = r"\b(" + "|".join(re.escape(word.lower()) for word in bad_words) + r")\b"
+
+    if re.search(pattern, text) or re.search(pattern, caption):
         try:
             bot.delete_message(message.chat.id, message.message_id)
             bot.send_message(
                 message.chat.id,
-                f"🛡️ {message.from_user.first_name}, qrupumuzda söyüş daxili cümlələr və etik verici kəlmələr işlətmək qadağandır ⛔"
+                f"🛡️ {message.from_user.first_name}, qrupumuzda söyüş və etik olmayan kəlmələr qadağandır ⛔"
             )
             bot.send_message(
                 config.LOG_CHANNEL,
-                f"💁 Söyüş (argo) daxili mesaj silindi 🗑️\n"
+                f"💁 Söyüş mesaj silindi 🗑️\n"
                 f"👤 Adı: {message.from_user.first_name}\n"
                 f"🏡 Qrup: {message.chat.title}\n"
                 f"👁️ Mesaj: {text or caption}"
@@ -208,8 +209,7 @@ def filter_bad_words(message):
             if "message can't be deleted" in str(e):
                 bot.send_message(
                     message.chat.id,
-                    "🗣️ Görünür ki, mesajları silmək səlahiyyətlərim yoxdur. "
-                    "Səlahiyyətlərimi artırmağı düşün. Təşəkkürlər!🙋"
+                    "🗣️ Görünür ki, mesajları silmək səlahiyyətim yoxdur. Səlahiyyətlərimi artırmağı düşün. Təşəkkürlər!🙋"
                 )
             else:
                 print(e)
