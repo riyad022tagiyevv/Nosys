@@ -1,1 +1,1 @@
-# RespublicNoSoyus
+#reponu satanin anasini sikm
