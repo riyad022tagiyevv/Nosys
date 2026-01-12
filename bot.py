@@ -41,34 +41,38 @@ def start_message(message):
         )
         bot.send_message(
             chat_id,
-            f"Salam {user.first_name} 🙋\n"
-            f"Funksiyalarımı görmək üçün şəxsi mesaja daxil ol 🧑‍🔧",
+            f"Salam {user.first_name} 🙋\nMənim funksiyalarımı görmək üçün zəhmət olmasa şəxsi pm mesajıma daxil ol 🧑‍🔧",
             reply_markup=kb
         )
         return
 
-    # qısa animasiya
-    anim_msg = bot.send_message(chat_id, "𝘕𝘰 𝘚𝘰̈𝘺𝘶̈𝘴 𝘣𝘢𝘴𝘭𝘢𝘵𝘪𝘳")
-    for i in range(3):
-        bot.edit_message_text(
-            "𝘕𝘰 𝘚𝘰̈𝘺𝘶̈𝘴 𝘣𝘢𝘴𝘭𝘢𝘵𝘪𝘳" + "." * i,
+    msg = bot.send_message(chat_id, "🔞")
+    time.sleep(2)
+    bot.delete_message(chat_id, msg.message_id)
+
+    def animate():
+        anim_text = "𝘕𝘰 𝘚𝘰̈𝘺𝘶̈𝘴 𝘣𝘢𝘴𝘭𝘢𝘵𝘪𝘳"
+        anim_msg = bot.send_message(chat_id, anim_text)
+        for i in range(6):
+            try:
+                bot.edit_message_text(anim_text + "." * (i % 4), chat_id, anim_msg.message_id)
+            except:
+                pass
+            time.sleep(0.5)
+        try:
+            bot.delete_message(chat_id, anim_msg.message_id)
+        except:
+            pass
+
+        bot.send_photo(
             chat_id,
-            anim_msg.message_id
+            config.START_IMAGE,
+            caption=f"🙋 Salam {user.first_name}\n🇦🇿 Mən Azərbaycan dil dəstəkli botam\n🛡️ Qrupunuza əlavə edərək söyüşlü cümlələrdən azad ola bilərsiniz",
+            reply_markup=get_main_keyboard()
         )
-        time.sleep(0.5)
 
-    bot.delete_message(chat_id, anim_msg.message_id)
+    threading.Thread(target=animate).start()
 
-    bot.send_photo(
-        chat_id,
-        config.START_IMAGE,
-        caption=(
-            f"🙋 Salam {user.first_name}\n"
-            f"🇦🇿 Mən Azərbaycan dil dəstəkli botam\n"
-            f"🛡️ Qrupunuza əlavə edərək söyüşlü cümlələrdən azad ola bilərsiniz"
-        ),
-        reply_markup=get_main_keyboard()
-    )
 
 @bot.message_handler(commands=['id'])
 def get_id(message):
