@@ -27,7 +27,6 @@ def get_main_keyboard():
 
 
 @bot.message_handler(commands=['start'])
-@bot.message_handler(commands=['start'])
 def start_message(message):
     chat_id = message.chat.id
     user = message.from_user
