@@ -195,6 +195,27 @@ def filter_bad_words(message):
         except:
             pass
 
+@bot.message_handler(commands=['leavegroup'])
+def leave_group(message):
+    args = message.text.split()
+    if len(args) != 2:
+        bot.reply_to(message, "/group <chat id>")
+        return
+
+    chat_id = args[1]
+
+    try:
+        chat_id = int(chat_id)
+    except ValueError:
+        bot.reply_to(message, "❌ Qrup ID yalnız rəqəmlə olmalıdır!")
+        return
+
+    try:
+        bot.leave_chat(chat_id)
+        bot.reply_to(message, f"✅ Bot uğurla {chat_id} ID-li qrupdan çıxdı.")
+    except Exception as e:
+        bot.reply_to(message, f"❌ Qrupdan çıxa bilmədim. Xəta: {e}")
+
 
 print("Bot işə düşdü...")
 bot.infinity_polling()
